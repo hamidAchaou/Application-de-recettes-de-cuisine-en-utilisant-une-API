@@ -43,49 +43,49 @@ async function getInfo(id) {
   );
   const dataModal = await response.json();
   console.log(dataModal);
-  console.log(id);
-
+  console.log(response);
 
   showDataModal();
-  
-function showDataModal() {
-  
-  let arrIngredient = "";
-  let arrMeasure = "";
-  let strIngredient = "";
-  let strMeasure = "";
 
-for (let i = 1; i <= 20; i++) {
-  // const element = array[i];
-  if (
-    dataModal.meals[0]["strIngredient" + i] !== "" &&
-    dataModal.meals[0]["strIngredient" + i].length > 0 &&
-    dataModal.meals[0]["strIngredient" + i] !== "null"
-  ) {
-    // console.log('khawya')
-    console.log(dataModal.meals[0]["strIngredient" + i]);
-    arrIngredient += `<li>${dataModal.meals[0]["strIngredient" + i]}</li>`;
-    // dataModal.meals[0]["strIngredient" + i] = myArray
-  } else {
-    // console.log('tanya')
-  }
-  if (
-    dataModal.meals[0]["strMeasure" + i] !== "" &&
-    dataModal.meals[0]["strMeasure" + i] !== " " &&
-    dataModal.meals[0]["strMeasure" + i].length > 0 &&
-    dataModal.meals[0]["strMeasure" + i] !== "null"
-  ) {
-    console.log(dataModal.meals[0]["strMeasure" + i]);
-    arrMeasure += `<li>${dataModal.meals[0]["strMeasure" + i]}</li>`;
-  } else {
-    // console.log('tanya')
-  }
-}
+  function showDataModal() {
+    let arrIngredient = "";
+    let arrMeasure = "";
+    let strIngredient = "";
+    let strMeasure = "";
 
-  let modal = document.querySelector("#modal");
-  modal.innerHTML = `
+    for (let i = 1; i <= 20; i++) {
+      // const element = array[i];
+      if (
+        dataModal.meals[0]["strIngredient" + i] !== "" &&
+        dataModal.meals[0]["strIngredient" + i].length > 0 &&
+        dataModal.meals[0]["strIngredient" + i] !== "null"
+      ) {
+        // console.log('khawya')
+        console.log(dataModal.meals[0]["strIngredient" + i]);
+        arrIngredient += `<li>${dataModal.meals[0]["strIngredient" + i]}</li>`;
+        // dataModal.meals[0]["strIngredient" + i] = myArray
+      } else {
+        // console.log('tanya')
+      }
+      if (
+        dataModal.meals[0]["strMeasure" + i] !== "" &&
+        dataModal.meals[0]["strMeasure" + i] !== " " &&
+        dataModal.meals[0]["strMeasure" + i].length > 0 &&
+        dataModal.meals[0]["strMeasure" + i] !== "null"
+      ) {
+        console.log(dataModal.meals[0]["strMeasure" + i]);
+        arrMeasure += `<li>${dataModal.meals[0]["strMeasure" + i]}</li>`;
+      } else {
+        // console.log('tanya')
+      }
+    }
+
+    let modal = document.querySelector("#modal");
+    modal.innerHTML = `
   <h2>${dataModal.meals[0].strMeal}</h2>
-  <img src="${dataModal.meals[0].strMealThumb}" class="card-img-top w-100 h-15" alt="...">
+  <img src="${
+    dataModal.meals[0].strMealThumb
+  }" class="card-img-top w-100 h-15" alt="...">
   <div class="d-flex justify-content-center gap-3">
     <div>
       <h3>${dataModal.meals[0].strCategory}</h3>
@@ -103,29 +103,34 @@ for (let i = 1; i <= 20; i++) {
   <p>${dataModal.meals[0].strInstructions}</p>
 
 <iframe width="100%" height="390" src="${dataModal.meals[0].strYoutube.replace(
-    "https://www.youtube.com/watch?v=",
-    "https://www.youtube.com/embed/"
-  )}" title="Fetching API data and displaying API data inside table." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      "https://www.youtube.com/watch?v=",
+      "https://www.youtube.com/embed/"
+    )}" title="Fetching API data and displaying API data inside table." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   `;
-}
+  }
 }
 /*
 ========================== Serch by Name  ===================
 */
+
 document.getElementById("inputvalue").addEventListener("keyup", function (e) {
-  async function getAllData() {
+  // ========= function Fetch data via API =========
+  async function getAllData(e) {
     const response = await fetch(
       "https://www.themealdb.com/api/json/v1/1/search.php?s=" + e.target.value
     );
     const data = await response.json();
-    console.log(data.meals.length);
+    // console.log(data.meals);
     // console.log('grg')
+    showDataInserch(e);
 
-    cards.innerHTML = ""
-    console.log(e.target.value);
-      for (let i = 0; i < data.meals.length; i++) {
-        // showData(i);
-        // console.log(i);
+// ======== function show Data whght Serch ===============
+    function showDataInserch(ele) {
+      cards.innerHTML = "";
+      if (ele.target.value.length > 0) {
+        for (let i = 0; i < data.meals.length; i++) {
+          // console.log(i);
+          // showData(J);
           let card = "";
           card += `
           <div class="col-4 bg-white">
@@ -137,9 +142,13 @@ document.getElementById("inputvalue").addEventListener("keyup", function (e) {
             <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" class="btn">Go somewhere</button>
           </div>`;
           cards.innerHTML += card;
-    }
+        }
+      } else {
+        getRandoumMeals();
+      }
+  
   }
-  // console.log(e.target.value)
-
-  getAllData();
+}
+  getAllData(e);
 });
+
