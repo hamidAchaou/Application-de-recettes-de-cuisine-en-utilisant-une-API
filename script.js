@@ -42,8 +42,8 @@ async function getInfo(id) {
     "https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id
   );
   const dataModal = await response.json();
-  console.log(dataModal);
-  console.log(response);
+  // console.log(dataModal);
+  // console.log(response);
 
   showDataModal();
 
@@ -61,7 +61,7 @@ async function getInfo(id) {
         dataModal.meals[0]["strIngredient" + i] !== "null"
       ) {
         // console.log('khawya')
-        console.log(dataModal.meals[0]["strIngredient" + i]);
+        // console.log(dataModal.meals[0]["strIngredient" + i]);
         arrIngredient += `<li>${dataModal.meals[0]["strIngredient" + i]}</li>`;
         // dataModal.meals[0]["strIngredient" + i] = myArray
       } else {
@@ -73,7 +73,7 @@ async function getInfo(id) {
         dataModal.meals[0]["strMeasure" + i].length > 0 &&
         dataModal.meals[0]["strMeasure" + i] !== "null"
       ) {
-        console.log(dataModal.meals[0]["strMeasure" + i]);
+        // console.log(dataModal.meals[0]["strMeasure" + i]);
         arrMeasure += `<li>${dataModal.meals[0]["strMeasure" + i]}</li>`;
       } else {
         // console.log('tanya')
@@ -155,3 +155,100 @@ document.getElementById("inputvalue").addEventListener("keyup", function (e) {
   getAllData(e);
 });
 
+/*
+========================== get categprie  ===================
+*/
+let allCategoryNames = document.querySelector("#all-category");
+let allRegionNames = document.querySelector("#all-Region");
+
+async function getAllCategory() {
+  const response = await fetch("https://www.themealdb.com/api/json/v1/1/list.php?c=list");
+  const allCategory = await response.json()
+  // console.log(allCategory)
+
+  allCategory.meals.map(function(category) {
+    allCategoryNames.innerHTML += `
+          <option>${category.strCategory}</option>
+    `;
+  })
+
+}
+getAllCategory();
+
+/*
+========================== get Region  ===================
+*/
+async function getAllRegion() {
+  const response = await fetch("https://www.themealdb.com/api/json/v1/1/list.php?a=list");
+  const allRegion = await response.json()
+  // console.log(allRegion)
+
+  allRegion.meals.map(function(Region) {
+  // console.log(Region.strArea)
+    allRegionNames.innerHTML += `
+          <option value="${Region.strArea}" >${Region.strArea}</option>
+    `;
+  })
+}
+getAllRegion();
+
+/*
+========================== get Region  ===================
+*/
+async function serByRegion(e) {
+  console.log(e);
+  const response = await fetch("https://www.themealdb.com/api/json/v1/1/filter.php?a=" + e);
+  const data = await response.json();
+  console.log(data);
+
+  data.meals.map(function(Region) {
+  console.log(Region);
+  showData();
+
+  })
+  for(let i = 0; i<data.meals.length; i++) {
+
+  }
+}
+
+
+// function showData(i,meals,strMealThumb ) {
+//   let card = "";
+//   card += `
+//   <div class="col-4 bg-white">
+//   <img src="${data.meals[i].strMealThumb}" class="card-img-top px-0">
+//   <div class="card-body text-center">
+//     <h3 class="card-title"  id="nameMeal">
+//         ${data.meals[i].strMeal}
+//     </h3>
+//     <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
+//   </div>`;
+//   cards.innerHTML += card;
+// }
+
+// let regionarr;
+// async function getvalueofregion(z){
+//   console.log(z);
+//     cards.innerHTML = ""
+//     // console.log(e)
+//     const resPonse = await fetch("https://www.themealdb.com/api/json/v1/1/filter.php?a=" + e);
+//     regionarr = await resPonse.json();
+//     console.log(regionarr)
+//     console.log(regionarr.meals)
+
+//     for (let k = 0; k < regionarr.meals.length; k++) {
+//         console.log(regionarr.meals[k].strMeal)
+
+//         cards.innerHTML += `
+//         <div class="card mx-5 mb-5"  style="width: 25%;" id="${regionarr.meals[k].idMeal}">
+//         <img src="${regionarr.meals[k].strMealThumb}" class="card-img-top" alt="...">
+//         <div class="card-body">
+//           <h3 class="card-title">${regionarr.meals[k].strMeal}</h3>
+//           <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+//           <button class="btn btn-success" onclick="getInfo(${regionarr.meals[k].idMeal}"class="btn">See details</button>
+//         </div>
+//       </div>
+//     `
+// console.log(regionarr.meals[k].idMeal)
+//     }
+// }
