@@ -29,7 +29,7 @@ function showData(i) {
     <h3 class="card-title"  id="nameMeal">
         ${data.meals[i].strMeal}
     </h3>
-    <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" class="btn">Go somewhere</button>
+    <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
   </div>`;
   cards.innerHTML += card;
 }
@@ -83,32 +83,35 @@ async function getInfo(id) {
     let modal = document.querySelector("#modal");
     modal.innerHTML = `
   <h2>${dataModal.meals[0].strMeal}</h2>
-  <img src="${
+  <div class="d-flex justify-content-between">
+    <div id="img-vid-modal">
+    <img src="${
     dataModal.meals[0].strMealThumb
   }" class="card-img-top w-100 h-15" alt="...">
-  <div class="d-flex justify-content-center gap-3">
-    <div>
-      <h3>${dataModal.meals[0].strCategory}</h3>
-      <ul>
-        ${arrIngredient}
-      </ul>
-    </div>
-    <div class="d-flex">
-      <h3>${dataModal.meals[0].strArea}</h3><br>
-      <ul>
-        ${arrMeasure}
-      </ul>
-    </div>
-  </div>
-  <p>${dataModal.meals[0].strInstructions}</p>
-
-<iframe width="100%" height="390" src="${dataModal.meals[0].strYoutube.replace(
+  <iframe width="100%" height="390" src="${dataModal.meals[0].strYoutube.replace(
       "https://www.youtube.com/watch?v=",
       "https://www.youtube.com/embed/"
     )}" title="Fetching API data and displaying API data inside table." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div style="width: 45%;">
+    <div class="d-flex" >
+      <div>
+        <h3>${dataModal.meals[0].strCategory}</h3>
+        <ul>${arrIngredient} </ul>
+      </div>
+      <div>
+        <h3>${dataModal.meals[0].strArea}</h3><br>
+        <ul>${arrMeasure}</ul>
+      </div>
+    </div>
+    <p>${dataModal.meals[0].strInstructions}</p>
+  </div>
+  
+  </div>
   `;
   }
 }
+
 /*
 ========================== Serch by Name  ===================
 */

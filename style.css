@@ -1,3 +1,16 @@
 body {
     background-color: #777;
 }
+
+
+#img-vid-modal {
+    width: 50%;
+}
+
+/* .plus-info {
+    max-width: 50%;
+} */
+
+.modal-dialog{
+    max-width: 80%;
+}
