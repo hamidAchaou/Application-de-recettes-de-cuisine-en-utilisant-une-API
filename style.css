@@ -1,5 +1,8 @@
 body {
+    padding: 0;
+    margin: 0;
     background-color: #777;
+    /* background: url(images/2.jpg) center center/cover; */
 }
 
 
@@ -13,4 +16,36 @@ body {
 
 .modal-dialog{
     max-width: 80%;
+}
+
+.img-one {
+    background: url(images/pexels-any-lane-5945660.jpg) center center/cover;
+    width: 100%;
+    height: 300px;
+}
+.img-two {
+    background: url(images/ayesha-firdaus-c3esWyvW3E4-unsplash.jpg) center center/cover;
+    width: 100%;
+    height: 300px;
+}
+.img-three {
+    background: url(images/thomas-tucker-MNtag_eXMKw-unsplash.jpg) center center/cover;
+    width: 100%;
+    height: 300px;
+}
+
+.pos-mov {
+    POSITION: absolute;
+    top: 183px;
+    right: 41px;
+}
+.form-control {
+    background-color: #eee;
+}
+.head-cate {
+    background: url(images/kitchen5.jpg) center center/cover;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 300px;
 }

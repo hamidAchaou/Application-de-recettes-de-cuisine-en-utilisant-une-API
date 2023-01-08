@@ -3,6 +3,13 @@
 let cards = document.querySelector("#meal-cards");
 let nameMeal = document.querySelector("#nameMeal");
 let img = document.querySelector("img");
+let modal = document.querySelector("#modal");
+let allCategoryNames = document.querySelector("#all-category");
+let allRegionNames = document.querySelector("#all-Region");
+let btnSearch = document.getElementById("search");
+let region = document.getElementById("all-Region");
+let categoryvalue = document.getElementById("all-category");
+let foundedarr = [];
 let data;
 /*
 ================================== Fetch ======================
@@ -23,7 +30,7 @@ getRandoumMeals();
 function showData(i) {
   let card = "";
   card += `
-  <div class="col-4 bg-white">
+  <div class="col-4 bg-white mr-3">
   <img src="${data.meals[i].strMealThumb}" class="card-img-top px-0">
   <div class="card-body text-center">
     <h3 class="card-title"  id="nameMeal">
@@ -42,11 +49,12 @@ async function getInfo(id) {
     "https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id
   );
   const dataModal = await response.json();
-  console.log(dataModal);
+  // console.log(dataModal);
   // console.log(response);
 
   showDataModal();
 
+  // The function of displaying data about the meal in the modal
   function showDataModal() {
     let arrIngredient = "";
     let arrMeasure = "";
@@ -54,33 +62,29 @@ async function getInfo(id) {
     let strMeasure = "";
 
     for (let i = 1; i <= 20; i++) {
-      // const element = array[i];
+      //lop in meals for get gredient ana Measure
+      //condition for gredient
       if (
         dataModal.meals[0]["strIngredient" + i] !== "" &&
         dataModal.meals[0]["strIngredient" + i].length > 0 &&
         dataModal.meals[0]["strIngredient" + i] !== "null"
       ) {
-        // console.log('khawya')
-        // console.log(dataModal.meals[0]["strIngredient" + i]);
         arrIngredient += `<li>${dataModal.meals[0]["strIngredient" + i]}</li>`;
-        // dataModal.meals[0]["strIngredient" + i] = myArray
       } else {
-        // console.log('tanya')
       }
+      //condition for  Measure
       if (
         dataModal.meals[0]["strMeasure" + i] !== "" &&
         dataModal.meals[0]["strMeasure" + i] !== " " &&
         dataModal.meals[0]["strMeasure" + i].length > 0 &&
         dataModal.meals[0]["strMeasure" + i] !== "null"
       ) {
-        // console.log(dataModal.meals[0]["strMeasure" + i]);
         arrMeasure += `<li>${dataModal.meals[0]["strMeasure" + i]}</li>`;
       } else {
-        // console.log('tanya')
       }
     }
 
-    let modal = document.querySelector("#modal");
+    // show data in modal
     modal.innerHTML = `
   <h2>${dataModal.meals[0].strMeal}</h2>
   <h3>${dataModal.meals[0].strArea}</h3>
@@ -114,18 +118,16 @@ async function getInfo(id) {
 }
 
 /*
-========================== Serch by Name  ===================
+========================== Serch by Name (keyup)  ===================
 */
-
 document.getElementById("inputvalue").addEventListener("keyup", function (e) {
-  // ========= function Fetch data via API =========
+  // function get data (fetch)
   async function getAllData(e) {
     const response = await fetch(
       "https://www.themealdb.com/api/json/v1/1/search.php?s=" + e.target.value
     );
     const data = await response.json();
-    // console.log(data.meals);
-    // console.log('grg')
+
     showDataInserch(e);
 
     // ======== function show Data whght Serch ===============
@@ -143,8 +145,8 @@ document.getElementById("inputvalue").addEventListener("keyup", function (e) {
             <h3 class="card-title"  id="nameMeal">
                 ${data.meals[i].strMeal}
             </h3>
-            <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" class="btn">Go somewhere</button>
-          </div>`;
+            <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
+            </div>`;
           cards.innerHTML += card;
         }
       } else {
@@ -155,56 +157,47 @@ document.getElementById("inputvalue").addEventListener("keyup", function (e) {
   getAllData(e);
 });
 
-/*
-========================== get categprie  ===================
-*/
-let allCategoryNames = document.querySelector("#all-category");
-let allRegionNames = document.querySelector("#all-Region");
-
+// get data of category
 async function getAllCategory() {
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/list.php?c=list"
   );
   const allCategory = await response.json();
-  // console.log(allCategory)
 
+  // loop in array (all category)  for get name all  category
   allCategory.meals.map(function (category) {
     allCategoryNames.innerHTML += `
           <option>${category.strCategory}</option>
     `;
   });
 }
+
 getAllCategory();
 
-/*
-========================== get "" Region  ===================
-*/
+// get data of Region
 async function getAllRegion() {
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/list.php?a=list"
   );
   const allRegion = await response.json();
-  // console.log(allRegion)
 
+  // loop in array (all category)  for get name all Region
   allRegion.meals.map(function (Region) {
-    // console.log(Region.strArea)
     allRegionNames.innerHTML += `
           <option value="${Region.strArea}" >${Region.strArea}</option>
     `;
   });
 }
+
 getAllRegion();
 
 /*
 ==========================   ===================
 */
-let btnSearch = document.getElementById("search");
-let region = document.getElementById("all-Region");
-let categoryvalue = document.getElementById("all-category");
-let foundedarr = [];
 
-btnSearch.addEventListener("click", async function () {
-  // console.log(region.value);
+// btnSearch.addEventListener("click", async function (e) {
+async function serByCateg(e) {
+  console.log(region.value);
   const resPonse = await fetch(
     "https://www.themealdb.com/api/json/v1/1/filter.php?a=" + region.value
   );
@@ -229,13 +222,10 @@ btnSearch.addEventListener("click", async function () {
       if (data.meals[k].idMeal == category.meals[h].idMeal) {
         foundedarr.push(data.meals[k]);
         // showData(k);
-        // console.log(data.meals[k]);
       }
     }
   }
-
   // Show the data stored in the variable and display it on the page
-  console.log(foundedarr);
   foundedarr.map(function (ele) {
     let card = "";
     cards.innerHTML += `
@@ -248,7 +238,7 @@ btnSearch.addEventListener("click", async function () {
       <button class="btn btn-primary" onclick="getInfo(${ele.idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
     </div>`;
   });
-});
+}
 // =================== function get regio ================================
 async function getvalueofregion(e) {
   cards.innerHTML = "";
