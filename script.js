@@ -9,6 +9,8 @@ let allRegionNames = document.querySelector("#all-Region");
 let btnSearch = document.getElementById("search");
 let region = document.getElementById("all-Region");
 let categoryvalue = document.getElementById("all-category");
+let selectRegion = document.getElementById("all-Region");
+let selectCtegory = document.getElementById("all-category");
 let foundedarr = [];
 let data;
 /*
@@ -21,24 +23,28 @@ async function getRandoumMeals() {
       "https://www.themealdb.com/api/json/v1/1/random.php"
     );
     data = await response.json();
-    showData(0);
+    // console.log(data.meals);
+    showData(data.meals);
   }
 }
 getRandoumMeals();
 
 // function show data in Cards
-function showData(i) {
+function showData(array) {
+  // console.log(array);
   let card = "";
-  card += `
-  <div class="col-4 bg-white mr-3">
-  <img src="${data.meals[i].strMealThumb}" class="card-img-top px-0">
-  <div class="card-body text-center">
-    <h3 class="card-title"  id="nameMeal">
-        ${data.meals[i].strMeal}
-    </h3>
-    <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
-  </div>`;
-  cards.innerHTML += card;
+  for (let i = 0; i < array.length; i++) {
+    card = `
+    <div class="col-4 bg-white mr-3">
+    <img src="${array[i].strMealThumb}" class="card-img-top px-0">
+    <div class="card-body text-center">
+      <h3 class="card-title"  id="nameMeal">
+          ${array[i].strMeal}
+      </h3>
+      <button class="btn btn-primary" onclick="getInfo(${array[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
+    </div></div>`;
+    cards.innerHTML += card;
+  }
 }
 
 /*
@@ -134,21 +140,7 @@ document.getElementById("inputvalue").addEventListener("keyup", function (e) {
     function showDataInserch(ele) {
       cards.innerHTML = "";
       if (ele.target.value.length > 0) {
-        for (let i = 0; i < data.meals.length; i++) {
-          // console.log(i);
-          // showData(J);
-          let card = "";
-          card += `
-          <div class="col-4 bg-white">
-          <img src="${data.meals[i].strMealThumb}" class="card-img-top px-0">
-          <div class="card-body text-center">
-            <h3 class="card-title"  id="nameMeal">
-                ${data.meals[i].strMeal}
-            </h3>
-            <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
-            </div>`;
-          cards.innerHTML += card;
-        }
+        showData(data.meals);
       } else {
         getRandoumMeals();
       }
@@ -158,11 +150,14 @@ document.getElementById("inputvalue").addEventListener("keyup", function (e) {
 });
 
 // get data of category
+let arrAllCateg = [];
 async function getAllCategory() {
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/list.php?c=list"
   );
   const allCategory = await response.json();
+  console.log(allCategory);
+  arrAllCateg.push(allCategory);
 
   // loop in array (all category)  for get name all  category
   allCategory.meals.map(function (category) {
@@ -171,17 +166,25 @@ async function getAllCategory() {
     `;
   });
 }
+// console.log(arrAllCateg);
 
 getAllCategory();
 
 // get data of Region
+let arrAllAria = [];
 async function getAllRegion() {
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/list.php?a=list"
   );
   const allRegion = await response.json();
+  console.log(arrAllAria);
+  arrAllAria.push(allRegion);
 
   // loop in array (all category)  for get name all Region
+  // if ((Region.strArea = "Moroccan")) {
+  //   selectRegion.value.setAttribute("selected", "true");
+  //   console.log(selectRegion);
+  // }
   allRegion.meals.map(function (Region) {
     allRegionNames.innerHTML += `
           <option value="${Region.strArea}" >${Region.strArea}</option>
@@ -194,10 +197,8 @@ getAllRegion();
 /*
 ==========================   ===================
 */
-
-// btnSearch.addEventListener("click", async function (e) {
 async function serByCateg(e) {
-  console.log(region.value);
+  // console.log(region.value);
   const resPonse = await fetch(
     "https://www.themealdb.com/api/json/v1/1/filter.php?a=" + region.value
   );
@@ -208,11 +209,6 @@ async function serByCateg(e) {
       categoryvalue.value
   );
   const category = await response.json();
-  //     console.log(categoryvalue.value)
-  //  console.log(category.meals[0].idMeal)
-  //     console.log(category)
-  //     console.log(regionarr.meals[0].idMeal)
-  // console.log(regionarr)
 
   foundedarr.length = 0;
   cards.innerHTML = "";
@@ -225,19 +221,8 @@ async function serByCateg(e) {
       }
     }
   }
-  // Show the data stored in the variable and display it on the page
-  foundedarr.map(function (ele) {
-    let card = "";
-    cards.innerHTML += `
-    <div class="col-4 bg-white">
-    <img src="${ele.strMealThumb}" class="card-img-top px-0">
-    <div class="card-body text-center">
-      <h3 class="card-title"  id="nameMeal">
-          ${ele.strMeal}
-      </h3>
-      <button class="btn btn-primary" onclick="getInfo(${ele.idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
-    </div>`;
-  });
+
+  showData(foundedarr);
 }
 // =================== function get regio ================================
 async function getvalueofregion(e) {
@@ -247,20 +232,7 @@ async function getvalueofregion(e) {
   );
   const data = await resPonse.json();
 
-  for (let i = 0; i < data.meals.length; i++) {
-    // console.log(regionarr.meals[k].strMeal)
-    // showData(k);
-    cards.innerHTML += `
-    <div class="col-4 bg-white">
-    <img src="${data.meals[i].strMealThumb}" class="card-img-top px-0">
-    <div class="card-body text-center">
-      <h3 class="card-title"  id="nameMeal">
-          ${data.meals[i].strMeal}
-      </h3>
-      <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
-
-    </div>`;
-  }
+  showData(data.meals);
 }
 // =================== function get regio ================================
 async function getvalueofcategory(e) {
@@ -269,16 +241,14 @@ async function getvalueofcategory(e) {
     "https://www.themealdb.com/api/json/v1/1/filter.php?c=" + e
   );
   const data = await resPonse.json();
-
-  for (let i = 0; i < data.meals.length; i++) {
-    cards.innerHTML += `
-    <div class="col-4 bg-white">
-    <img src="${data.meals[i].strMealThumb}" class="card-img-top px-0">
-    <div class="card-body text-center">
-      <h3 class="card-title"  id="nameMeal">
-          ${data.meals[i].strMeal}
-      </h3>
-      <button class="btn btn-primary" onclick="getInfo(${data.meals[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
-    </div>`;
-  }
+  showData(data.meals);
 }
+
+// function all category
+function allCateg() {
+  console.log(arrAllCateg);
+  console.log(arrAllAria);
+
+  
+}
+allCateg();
