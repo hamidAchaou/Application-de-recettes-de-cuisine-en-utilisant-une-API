@@ -1,10 +1,17 @@
 body {
     padding: 0;
     margin: 0;
-    background-color: #777;
+    background-color: #aec2f3;
     /* background: url(images/2.jpg) center center/cover; */
 }
 
+/* nav {
+    position: fixed;
+} */
+
+a {
+    font-size: 1.3rem;
+}
 
 #img-vid-modal {
     width: 50%;
@@ -19,17 +26,17 @@ body {
 }
 
 .img-one {
-    background: url(images/pexels-any-lane-5945660.jpg) center center/cover;
+    background: url(images/meals6.jpg) center center/cover;
     width: 100%;
     height: 300px;
 }
 .img-two {
-    background: url(images/ayesha-firdaus-c3esWyvW3E4-unsplash.jpg) center center/cover;
+    background: url(images/5.jpg) center center/cover;
     width: 100%;
     height: 300px;
 }
 .img-three {
-    background: url(images/thomas-tucker-MNtag_eXMKw-unsplash.jpg) center center/cover;
+    background: url(images/meals5.jpg) center center/cover;
     width: 100%;
     height: 300px;
 }
@@ -48,4 +55,26 @@ body {
     padding: 0;
     width: 100%;
     height: 300px;
+}
+
+div #hov {
+    background: #000;
+    /* background: rgb(62 62 62); */
+    cursor: pointer;
+    transform: scale(1.03);
+}
+.active-pagination {
+    background: #0ab1ce;
+}
+
+#img-cards:hover {
+    transition: transform .2s;
+}
+
+#link-filter {
+    text-decoration: none;
+    color: #000;
+}
+#link-filter:hover {
+    color: #0ab1ce;
 }

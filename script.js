@@ -1,7 +1,9 @@
 "use strict";
 // =========================== déclaration document html =============================
 let cards = document.querySelector("#meal-cards");
+let btn = document.querySelector(".btn");
 let nameMeal = document.querySelector("#nameMeal");
+let searchedResult = document.querySelector("#search-result");
 let img = document.querySelector("img");
 let modal = document.querySelector("#modal");
 let allCategoryNames = document.querySelector("#all-category");
@@ -11,7 +13,11 @@ let region = document.getElementById("all-Region");
 let categoryvalue = document.getElementById("all-category");
 let selectRegion = document.getElementById("all-Region");
 let selectCtegory = document.getElementById("all-category");
+let pagination = document.getElementById("pagination");
+let arrAllCateg = [];
+let arrAllAria = [];
 let foundedarr = [];
+let allCountriedArr = [];
 let data;
 /*
 ================================== Fetch ======================
@@ -23,7 +29,6 @@ async function getRandoumMeals() {
       "https://www.themealdb.com/api/json/v1/1/random.php"
     );
     data = await response.json();
-    // console.log(data.meals);
     showData(data.meals);
   }
 }
@@ -31,32 +36,68 @@ getRandoumMeals();
 
 // function show data in Cards
 function showData(array) {
-  // console.log(array);
   let card = "";
   for (let i = 0; i < array.length; i++) {
     card = `
-    <div class="col-4 bg-white mr-3">
-    <img src="${array[i].strMealThumb}" class="card-img-top px-0">
-    <div class="card-body text-center">
+    <div class="col-12 col-md-4 mb-2">
+    <div class="bg-white card h-100" id="hov">
+    <img src="${array[i].strMealThumb}" class="card-img-top" id="img-cards">
+    <div class="card-body text-center mt-auto">
       <h3 class="card-title"  id="nameMeal">
           ${array[i].strMeal}
       </h3>
-      <button class="btn btn-primary" onclick="getInfo(${array[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
-    </div></div>`;
+      <button class="btn btn-primary mt-auto" onclick="getInfo(${array[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
+    </div>
+    </div>
+    </div>
+    `;
     cards.innerHTML += card;
   }
 }
 
 /*
-========================== show Data in Modale ===================
+==========================<!-- Serch by Name -->  ===================
+*/
+document.getElementById("inputvalue").addEventListener("keyup", function (e) {
+  // document.getElementById("btn").addEventListener("keyup", function (e) {
+  // serchByName();
+  // function serchByName(e) {
+  // function get data (fetch)
+  // e.preventDefault();
+  async function getAllData(e) {
+    const response = await fetch(
+      "https://www.themealdb.com/api/json/v1/1/search.php?s=" + e.target.value
+    );
+    const data = await response.json();
+
+    showDataInserch(e);
+
+    // function show Data whght Serch
+    function showDataInserch(ele) {
+      // cards.innerHTML = "";
+      if (ele.target.value.length > 0) {
+        DisplayMealsList(data.meals, cards, mealsPerPage, currentPage);
+        SetupPagination(data.meals, pagination, mealsPerPage);
+      }
+      // else if ((ele.target.value.length = "")) {
+      //   getRandoumMeals();
+      // }
+    }
+  }
+  getAllData(e);
+});
+// let inpserch = document.getElementById("inputvalue");
+// if (inpserch.onblur) {
+//   inpserch.value = "";
+// }
+/*
+==========================<!--   show Data in Modale -->===================
 */
 async function getInfo(id) {
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id
   );
   const dataModal = await response.json();
-  // console.log(dataModal);
-  // console.log(response);
 
   showDataModal();
 
@@ -123,82 +164,60 @@ async function getInfo(id) {
   }
 }
 
-/*
-========================== Serch by Name (keyup)  ===================
-*/
-document.getElementById("inputvalue").addEventListener("keyup", function (e) {
-  // function get data (fetch)
-  async function getAllData(e) {
-    const response = await fetch(
-      "https://www.themealdb.com/api/json/v1/1/search.php?s=" + e.target.value
-    );
-    const data = await response.json();
-
-    showDataInserch(e);
-
-    // ======== function show Data whght Serch ===============
-    function showDataInserch(ele) {
-      cards.innerHTML = "";
-      if (ele.target.value.length > 0) {
-        showData(data.meals);
-      } else {
-        getRandoumMeals();
-      }
-    }
-  }
-  getAllData(e);
-});
-
 // get data of category
-let arrAllCateg = [];
 async function getAllCategory() {
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/list.php?c=list"
   );
   const allCategory = await response.json();
-  console.log(allCategory);
   arrAllCateg.push(allCategory);
 
   // loop in array (all category)  for get name all  category
   allCategory.meals.map(function (category) {
     allCategoryNames.innerHTML += `
-          <option>${category.strCategory}</option>
+          <option value="${category.strCategory}">${category.strCategory}</option>
     `;
   });
+  document.querySelectorAll("#all-category option").forEach(function (option) {
+    if (option.value == "Lamb") {
+      option.setAttribute("selected", true);
+    }
+  });
 }
-// console.log(arrAllCateg);
 
 getAllCategory();
 
 // get data of Region
-let arrAllAria = [];
 async function getAllRegion() {
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/list.php?a=list"
   );
   const allRegion = await response.json();
-  console.log(arrAllAria);
   arrAllAria.push(allRegion);
 
   // loop in array (all category)  for get name all Region
   // if ((Region.strArea = "Moroccan")) {
   //   selectRegion.value.setAttribute("selected", "true");
-  //   console.log(selectRegion);
   // }
   allRegion.meals.map(function (Region) {
     allRegionNames.innerHTML += `
-          <option value="${Region.strArea}" >${Region.strArea}</option>
+          <option value="${Region.strArea}">${Region.strArea}</option>
     `;
+  });
+  document.querySelectorAll("#all-Region option").forEach(function (option) {
+    if (option.value == "Moroccan") {
+      option.setAttribute("selected", true);
+    }
   });
 }
 
 getAllRegion();
 
 /*
-==========================   ===================
+========================== <!--  serch by category and Region --> ===================
 */
-async function serByCateg(e) {
-  // console.log(region.value);
+// Serch By Contry
+async function serCategRegion() {
   const resPonse = await fetch(
     "https://www.themealdb.com/api/json/v1/1/filter.php?a=" + region.value
   );
@@ -210,21 +229,73 @@ async function serByCateg(e) {
   );
   const category = await response.json();
 
+  // show all data (Region and Category)
+  function allCategReg() {
+    if (
+      allRegionNames.value !== "allRegion" &&
+      allCategoryNames.value !== "AllCategory"
+    ) {
+      lopCategReg();
+    } else if (
+      allRegionNames.value == "allRegion" &&
+      allCategoryNames.value !== "AllCategory"
+    ) {
+      // getvalueofcategory();
+      getvalueofcategory(allCategoryNames.value);
+    } else if (
+      allCategoryNames.value == "AllCategory" &&
+      allRegionNames.value != "allRegion"
+    ) {
+      console.log("la hawlla walla 9owatta illa billah");
+      getvalueofregion(allRegionNames.value);
+    } else if (
+      allCategoryNames.value === "AllCategory" &&
+      allRegionNames.value === "allRegion"
+    ) {
+      // show data in selected all Category all Region
+      async function showAllData() {
+        for (let i = 0; i < arrAllAria[0].meals.length; i++) {
+          const resPonse = await fetch(
+            `https://www.themealdb.com/api/json/v1/1/filter.php?a=${arrAllAria[0].meals[i].strArea}`
+          );
+          const allData = await resPonse.json();
+          allCountriedArr.push(allData.meals);
+          // showData(allCountriedArr.flat());
+          DisplayMealsList(
+            allCountriedArr.flat(),
+            cards,
+            mealsPerPage,
+            currentPage
+          );
+          SetupPagination(allCountriedArr.flat(), pagination, mealsPerPage);
+        }
+      }
+      showAllData();
+    }
+
+    // arrAllAria;
+  }
+
   foundedarr.length = 0;
   cards.innerHTML = "";
   // Loop fetching elements that have the same id and stored in a variable
-  for (let h = 0; h < category.meals.length; h++) {
-    for (let k = 0; k < data.meals.length; k++) {
-      if (data.meals[k].idMeal == category.meals[h].idMeal) {
-        foundedarr.push(data.meals[k]);
-        // showData(k);
+  function lopCategReg() {
+    for (let h = 0; h < category.meals.length; h++) {
+      for (let k = 0; k < data.meals.length; k++) {
+        if (data.meals[k].idMeal == category.meals[h].idMeal) {
+          foundedarr.push(data.meals[k]);
+        }
       }
     }
   }
-
-  showData(foundedarr);
+  allCategReg(); // show All data
+  // showData(foundedarr); // function show data in cards
+  DisplayMealsList(foundedarr, cards, mealsPerPage, currentPage);
+  SetupPagination(foundedarr, pagination, mealsPerPage);
 }
-// =================== function get regio ================================
+
+// function get regio
+// allRegionNames.addEventListener("onchange")
 async function getvalueofregion(e) {
   cards.innerHTML = "";
   const resPonse = await fetch(
@@ -232,23 +303,87 @@ async function getvalueofregion(e) {
   );
   const data = await resPonse.json();
 
-  showData(data.meals);
+  DisplayMealsList(data.meals, cards, mealsPerPage, currentPage);
+  SetupPagination(data.meals, pagination, mealsPerPage);
+  // showData(data.meals);
 }
-// =================== function get regio ================================
+//function get Categories
 async function getvalueofcategory(e) {
   cards.innerHTML = "";
   const resPonse = await fetch(
     "https://www.themealdb.com/api/json/v1/1/filter.php?c=" + e
   );
-  const data = await resPonse.json();
-  showData(data.meals);
+  const dataCateg = await resPonse.json();
+  // showData(dataCateg.meals);
+  DisplayMealsList(dataCateg.meals, cards, mealsPerPage, currentPage);
+  SetupPagination(dataCateg.meals, pagination, mealsPerPage);
 }
 
-// function all category
-function allCateg() {
-  console.log(arrAllCateg);
-  console.log(arrAllAria);
+/*
+=====================<!-- PAGINTION -->=================================
+*/
+// current Page
+let currentPage = 1;
+// meals Per Page
+let mealsPerPage = 6;
+let card = "";
+function DisplayMealsList(items, ShowAssignments, mealsPerPage, page) {
+  ShowAssignments.innerHTML = "";
+  page--;
 
-  
+  let start = mealsPerPage * page;
+  let end = start + mealsPerPage;
+
+  let itemswillAppear = items.slice(start, end);
+
+  for (let i = 0; i < itemswillAppear.length; i++) {
+    card += `
+    <div class="col-12 col-md-4">
+    <div class="bg-white card h-100" id="hov">
+    <img src="${itemswillAppear[i].strMealThumb}" class="card-img-top">
+    <div class="card-body text-center">
+      <h3 class="card-title"  id="nameMeal">
+          ${itemswillAppear[i].strMeal}
+      </h3>
+      <button class="btn btn-primary" onclick="getInfo(${itemswillAppear[i].idMeal})" data-bs-toggle="modal" data-bs-target="#exampleModal">Go somewhere</button>
+    </div>
+    </div>
+    </div>`;
+  }
+  cards.innerHTML = card;
+  card = "";
 }
-allCateg();
+
+function SetupPagination(items, ShowAssignments, mealsPerPage) {
+  ShowAssignments.innerHTML = "";
+
+  let page_count = Math.ceil(items.length / mealsPerPage);
+  for (let i = 1; i <= page_count; i++) {
+    if (page_count > 1) {
+      let btn = paginationButton(i, items);
+      ShowAssignments.appendChild(btn);
+    }
+  }
+}
+
+function paginationButton(page, items) {
+  let button = document.createElement("button");
+  button.innerText = page;
+  // if the current button value is equal to the page add an active class
+  if (currentPage == page) button.classList.add("active-pagination");
+  //
+  button.addEventListener("click", function () {
+    // when we click the button the value of the current page will be changed to the value of the clicked button
+    currentPage = page;
+    DisplayMealsList(items, searchedResult, mealsPerPage, currentPage);
+    // delete the active class from the selected button
+    let current_btn = document.querySelector(
+      "#pagination button.active-pagination"
+    );
+    current_btn.classList.remove("active-pagination");
+    // adding the active class to the selected button
+    button.classList.add("active-pagination");
+  });
+  currentPage = 1;
+  return button;
+}
