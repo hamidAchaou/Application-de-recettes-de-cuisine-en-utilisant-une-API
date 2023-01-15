@@ -1,25 +1,18 @@
 body {
     padding: 0;
     margin: 0;
-    background-color: #aec2f3;
+    background-color: #333;
     /* background: url(images/2.jpg) center center/cover; */
 }
-
-/* nav {
-    position: fixed;
-} */
 
 a {
     font-size: 1.3rem;
 }
 
+
 #img-vid-modal {
     width: 50%;
 }
-
-/* .plus-info {
-    max-width: 50%;
-} */
 
 .modal-dialog{
     max-width: 80%;
@@ -42,9 +35,9 @@ a {
 }
 
 .pos-mov {
-    POSITION: absolute;
-    top: 183px;
-    right: 41px;
+    position: absolute;
+    top: 228px;
+    right: 43px;
 }
 .form-control {
     background-color: #eee;
@@ -57,24 +50,17 @@ a {
     height: 300px;
 }
 
-div #hov {
-    background: #000;
-    /* background: rgb(62 62 62); */
-    cursor: pointer;
-    transform: scale(1.03);
-}
 .active-pagination {
     background: #0ab1ce;
 }
 
-#img-cards:hover {
-    transition: transform .2s;
-}
 
 #link-filter {
     text-decoration: none;
+    font-weight: 600;
     color: #000;
 }
 #link-filter:hover {
     color: #0ab1ce;
 }
+/* pagination */

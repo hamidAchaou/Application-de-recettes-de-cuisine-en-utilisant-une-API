@@ -20,7 +20,7 @@ let foundedarr = [];
 let allCountriedArr = [];
 let data;
 /*
-================================== Fetch ======================
+================================== show random data ======================
 */
 // function Bring data over the API
 async function getRandoumMeals() {
@@ -39,9 +39,9 @@ function showData(array) {
   let card = "";
   for (let i = 0; i < array.length; i++) {
     card = `
-    <div class="col-12 col-md-4 mb-2">
+    <div class="col-12 col-md-4 mb-2 hover-shadow">
     <div class="bg-white card h-100" id="hov">
-    <img src="${array[i].strMealThumb}" class="card-img-top" id="img-cards">
+    <img src="${array[i].strMealThumb}" class="card-img-top" id="img-cards hover-zoom ">
     <div class="card-body text-center mt-auto">
       <h3 class="card-title"  id="nameMeal">
           ${array[i].strMeal}
@@ -58,12 +58,8 @@ function showData(array) {
 /*
 ==========================<!-- Serch by Name -->  ===================
 */
+// Obtain data through search (keyup)
 document.getElementById("inputvalue").addEventListener("keyup", function (e) {
-  // document.getElementById("btn").addEventListener("keyup", function (e) {
-  // serchByName();
-  // function serchByName(e) {
-  // function get data (fetch)
-  // e.preventDefault();
   async function getAllData(e) {
     const response = await fetch(
       "https://www.themealdb.com/api/json/v1/1/search.php?s=" + e.target.value
@@ -74,26 +70,18 @@ document.getElementById("inputvalue").addEventListener("keyup", function (e) {
 
     // function show Data whght Serch
     function showDataInserch(ele) {
-      // cards.innerHTML = "";
-      if (ele.target.value.length > 0) {
-        DisplayMealsList(data.meals, cards, mealsPerPage, currentPage);
-        SetupPagination(data.meals, pagination, mealsPerPage);
-      }
-      // else if ((ele.target.value.length = "")) {
-      //   getRandoumMeals();
-      // }
+      //Show data and arrange them in the form of pagination
+      DisplayMealsList(data.meals, cards, mealsPerPage, currentPage);
+      SetupPagination(data.meals, pagination, mealsPerPage);
     }
   }
   getAllData(e);
 });
-// let inpserch = document.getElementById("inputvalue");
-// if (inpserch.onblur) {
-//   inpserch.value = "";
-// }
 /*
 ==========================<!--   show Data in Modale -->===================
 */
 async function getInfo(id) {
+  // get API
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id
   );
@@ -137,15 +125,15 @@ async function getInfo(id) {
   <h3>${dataModal.meals[0].strArea}</h3>
   <div class="d-flex justify-content-between">
     <div id="img-vid-modal">
-    <img src="${
-      dataModal.meals[0].strMealThumb
-    }" class="card-img-top w-100 h-15" alt="...">
-  <iframe width="100%" height="390" src="${dataModal.meals[0].strYoutube.replace(
-    "https://www.youtube.com/watch?v=",
-    "https://www.youtube.com/embed/"
-  )}" title="Fetching API data and displaying API data inside table." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </div>
-  <div style="width: 45%;">
+      <img src="${
+        dataModal.meals[0].strMealThumb
+      }" class="card-img-top w-100 h-15" alt="...">
+      <iframe width="100%" height="390" src="${dataModal.meals[0].strYoutube.replace(
+      "https://www.youtube.com/watch?v=",
+      "https://www.youtube.com/embed/"
+      )}" title="Fetching API data and displaying API data inside table." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div style="width: 45%;">
     <div class="d-flex" >
       <div>
         <h3>${dataModal.meals[0].strCategory}</h3>
@@ -157,8 +145,7 @@ async function getInfo(id) {
       </div>
     </div>
     <p>${dataModal.meals[0].strInstructions}</p>
-  </div>
-  
+    </div>
   </div>
   `;
   }
@@ -196,9 +183,6 @@ async function getAllRegion() {
   arrAllAria.push(allRegion);
 
   // loop in array (all category)  for get name all Region
-  // if ((Region.strArea = "Moroccan")) {
-  //   selectRegion.value.setAttribute("selected", "true");
-  // }
   allRegion.meals.map(function (Region) {
     allRegionNames.innerHTML += `
           <option value="${Region.strArea}">${Region.strArea}</option>
@@ -222,7 +206,6 @@ async function serCategRegion() {
     "https://www.themealdb.com/api/json/v1/1/filter.php?a=" + region.value
   );
   const data = await resPonse.json();
-  // ============---------------------------
   const response = await fetch(
     "https://www.themealdb.com/api/json/v1/1/filter.php?c=" +
       categoryvalue.value
@@ -260,7 +243,6 @@ async function serCategRegion() {
           );
           const allData = await resPonse.json();
           allCountriedArr.push(allData.meals);
-          // showData(allCountriedArr.flat());
           DisplayMealsList(
             allCountriedArr.flat(),
             cards,
@@ -328,7 +310,6 @@ let currentPage = 1;
 let mealsPerPage = 6;
 let card = "";
 function DisplayMealsList(items, ShowAssignments, mealsPerPage, page) {
-  ShowAssignments.innerHTML = "";
   page--;
 
   let start = mealsPerPage * page;
@@ -338,9 +319,9 @@ function DisplayMealsList(items, ShowAssignments, mealsPerPage, page) {
 
   for (let i = 0; i < itemswillAppear.length; i++) {
     card += `
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-4 hover-shadow">
     <div class="bg-white card h-100" id="hov">
-    <img src="${itemswillAppear[i].strMealThumb}" class="card-img-top">
+    <img src="${itemswillAppear[i].strMealThumb}" class="card-img-top hover-zoom ">
     <div class="card-body text-center">
       <h3 class="card-title"  id="nameMeal">
           ${itemswillAppear[i].strMeal}
